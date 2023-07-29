@@ -16,6 +16,8 @@ router.post("/signup", async (req, res) => {
     const { username, email, password } = req.body;
     try {
         const userPresent = await user.findOne({ email: email });
+        console.log(userPresent, "userpresent");
+        console.log("first me");
         const hashPassword = await bcrypt.hash(password, 10);
         if (userPresent) {
             return res.send({ msg: "email already exist", statusCode: "401" });
@@ -40,7 +42,6 @@ router.post("/login", async (req, res) => {
     try {
         const userExist = await user.findOne({ email: email });
         if (!userExist) {
-            console.log("User not found");
             return res.send({ msg: "User not found", statusCode: "401" });
         }
 
@@ -51,7 +52,6 @@ router.post("/login", async (req, res) => {
         }
 
         const token = jwt.sign({ email: userExist.email }, process.env.secretKey, { expiresIn: '1d' });
-        console.log("login done")
         res.send({ msg: "log in done", token: token, statusCode: "200" });
 
     } catch (error) {
@@ -61,36 +61,13 @@ router.post("/login", async (req, res) => {
 
 })
 
-//dashboardAccess
+//userprofile
 
-router.post("/getUserData", verify, async (req, res) => {
-
+router.post("/sendProjectData",verify, (req, res) => {
     try {
-        const user1 = await user.find({ email: req.body.email });
-
-        if (!user1) {
-            return res.send({ msg: "user not found", statusCode: "400" });
-        }
-
-        res.send({ msg: "verified", user: user1, statusCode: "200" });
-        // res.send({email})
-
-    } catch (error) {
-        console.log("errror in getuser", error);
-        res.send({ msg: "Auth error", statusCode: "500" });
-    }
-})
-
-//projectdata
-
-router.post("/projectdata", (req, res) => {
-    try {
-        const { pName, pDetails, pBudget, email } = req.body;
-        if (!email) {
-            return res.send({ msg: "Token expired login again", statusCode: "403" });
-        }
+        const { pName, pDetails, pBudget } = req.body;
         const newPrjectData = new project({
-            email,
+            email:req.body.email,
             pName,
             pDetails,
             pBudget
@@ -105,11 +82,9 @@ router.post("/projectdata", (req, res) => {
 
 //projectdetail
 
-router.post("/getprojectdata", async (req, res) => {
+router.get("/getUserProfile", verify, async (req, res) => {
     try {
-        const { email } = req.query;
-        console.log(req.body)
-        const projects = await project.find({ email: "tejaschougale2107@gmail.com" });
+        const projects = await project.find({ email: req.body.email });
         if (!projects) {
             res.send({ msg: "Project not found", statusCode: "403" })
         }

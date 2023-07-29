@@ -6,7 +6,7 @@ const UserSchema = {
     pName :{type:String,required:false},
     PDetails:{type:String,required:false},
     pBudget:{type:Number,required:false},
-    PAccept:{type:Boolean,default:false}
+    PAccept:{type:Boolean,default:false},
 }
 
 module.exports = mongoose.model("User",UserSchema);
