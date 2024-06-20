@@ -6,6 +6,24 @@ const Project = require("../models/Project");
 router.use(cors());
 
 //get user data
+ /** GET Methods */
+    /**
+     * @openapi
+     * '/admin/getprojectdata/':
+     *  get:
+     *     tags:
+     *     - User Controller
+     *     summary: Get a user project details
+     *     responses:
+     *      200:
+     *        description: Fetched Successfully
+     *      400:
+     *        description: Bad Request
+     *      404:
+     *        description: Not Found
+     *      500:
+     *        description: Server Error
+     */
 router.get("/getprojectdata", async (req, res) => {
    const projects = await Project.find({});
    res.send({ statusCode: "200", projects });

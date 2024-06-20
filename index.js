@@ -5,11 +5,16 @@ const userRoute = require('./routes/userroute');
 const adminRoute = require('./routes/adminroute');
 const dotenv = require("dotenv");
 
+const swaggerUI = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
+
 dotenv.config();
 
 app.use(express.json());
 mongoose.set("strictQuery", true);
 app.use(express.urlencoded());
+
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 mongoose.connect("mongodb://127.0.0.1:27017/budget", { useNewUrlParser: true });
 

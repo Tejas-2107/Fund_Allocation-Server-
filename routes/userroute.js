@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const user = require("../models/User");
 const project = require("../models/Project");
-const bcrypt = require("bcrypt");
+const sha = require("bcrypt");
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -18,7 +18,7 @@ router.post("/signup", async (req, res) => {
         const userPresent = await user.findOne({ email: email });
         console.log(userPresent, "userpresent");
         console.log("first me");
-        const hashPassword = await bcrypt.hash(password, 10);
+        const hashPassword = await sha.hash(password, 10);
         if (userPresent) {
             return res.send({ msg: "email already exist", statusCode: "401" });
         }
@@ -45,7 +45,7 @@ router.post("/login", async (req, res) => {
             return res.send({ msg: "User not found", statusCode: "401" });
         }
 
-        const matchPassword = await bcrypt.compare(password, userExist.password);
+        const matchPassword = await sha.compare(password, userExist.password);
         if (!matchPassword) {
             console.log("Password wrong");
             return res.send({ msg: "Password incorrect", statusCode: "403" });
